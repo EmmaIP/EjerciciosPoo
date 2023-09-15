@@ -28,7 +28,7 @@ public class MenuWorking {
                             "b. Por calorías\n\t" +
                             "c. Por macronutrientes\n\t" +
                             "d. Por datos personales\n\t");
-                    diet = menu.createNew(diet);
+                    diet = menu.createNew();
                     break;
                 case 2:
                     menu.showMenu(diet);

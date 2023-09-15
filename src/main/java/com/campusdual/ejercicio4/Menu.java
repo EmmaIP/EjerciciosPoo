@@ -38,15 +38,16 @@ public class Menu {
         }
     }
 
-    public Diet createNew(Diet diet) {    //método crear dieta
+    public Diet createNew() {    //método crear dieta
         Scanner keyboard = new Scanner(System.in);
         String election = keyboard.next().toLowerCase();
         keyboard.nextLine();
+        Diet diet = null;
         switch (election) {
             case "a":
-                diet = new Diet();
                 System.out.println("Dieta sin límites creada");
                 System.out.println("Pulse 3 para añadir alimento");
+                diet = new Diet();
                 break;
             case "b":
                 System.out.println("Elegir calorías máximas:");
@@ -100,6 +101,11 @@ public class Menu {
     }
 
     public void addNewFood(Diet diet, List<Food> foods) { //método añadir alimento
+        if(diet==null) {
+            System.out.println("No hay ninguna dieta creada");
+            System.out.println("Vuelva al paso 1");
+            return;
+        }
         Food food = null;
         System.out.println("Elegir entre 1 y 2:");
         System.out.println("1. Nuevo alimento\n" + "2. Alimento existente");
@@ -125,6 +131,27 @@ public class Menu {
                 Integer weight = keyboard.nextInt();
                 keyboard.nextLine();
                 Food newFood = new Food(name, carbs, fats, proteins);
+                if(diet.getMaxCalories()!= null) {
+                    Integer caloriesFood = (int) (newFood.getCalories(weight));
+                    if((diet.getTotalCalories() + caloriesFood) > diet.getMaxCalories()) {
+                        System.out.println("La cantidad máxima de calorías se ha superado");
+                        return;
+                    }
+                }
+                if(diet.getMaxCarbs() != null || diet.getMaxFats() != null || diet.getMaxProteins() != null) {
+                    Integer carbsFood = (int) (newFood.getCarbs() * weight/100);
+                    Integer fatsFood = (int) (newFood.getFats() * weight/100);
+                    Integer proteinsFood = (int) (newFood.getProteins() * weight/100);
+                    if(diet.getMaxCarbs() < carbsFood) {
+                        System.out.println("Los carbos máximos han sido superados");
+                    }
+                    if(diet.getMaxFats() < fatsFood) {
+                        System.out.println("Las grasas máximas han sido superadas");
+                    }
+                    if(diet.getMaxProteins() < proteinsFood) {
+                        System.out.println("Las proteínas máximas han sido superadas");
+                    }
+                }
                 foods.add(newFood);
                 diet.addFood(newFood, weight);
                 System.out.println("El alimento se ha añadido a la lista");
