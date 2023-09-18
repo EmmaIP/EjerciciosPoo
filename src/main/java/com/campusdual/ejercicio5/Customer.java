@@ -14,7 +14,7 @@ public class Customer {
     private Integer height;
     private Integer age;
     private Gender gender;
-    private Map<String, String> dietList;
+    private Map<String, Diet> dietList;
 
     public Customer(String name, String lastName, String surName, Integer weight, Integer height, Integer age, String gender) {
         this.name = name;
@@ -88,11 +88,11 @@ public class Customer {
         this.gender = gender;
     }
 
-    public Map<String, String> getDietList() {
+    public Map<String, Diet> getDietList() {
         return dietList;
     }
 
-    public void setDietList(Map<String, String> dietList) {
+    public void setDietList(Map<String, Diet> dietList) {
         this.dietList = dietList;
     }
 }

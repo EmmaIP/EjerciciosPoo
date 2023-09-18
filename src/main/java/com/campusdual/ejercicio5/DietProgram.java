@@ -82,7 +82,8 @@ public class DietProgram {
                 System.out.println("1-Agregar dieta");
                 System.out.println("2-Mostrar dietas y modificarlas");
                 System.out.println("3-Eliminar dieta");
-                option = Kb.getOption(1,3);
+                System.out.println("4-Volver atrás");
+                option = Kb.getOption(1,4);
                 switch (option){
                     case 1:
                         createDiet();
@@ -94,7 +95,6 @@ public class DietProgram {
                         deleteDiet();
                         break;
                     case 4:
-                        System.out.println("Salir del programa");
                         break;
                 }
             }while(option != 4);
@@ -155,7 +155,7 @@ public class DietProgram {
                     System.out.println("Escriba número de calorías");
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                     Integer calories = Kb.forceNextInt();
-                    dietList.put(dietName, new Diet(calories));
+                    dietList.put(dietName, new Diet(dietName, calories));
                     System.out.println("Se ha creado una dieta con " + calories + " calorías máximas");
                     break;
                 case 3:
@@ -279,6 +279,7 @@ public class DietProgram {
             System.out.println("Se ha eliminado el alimento correctamente");
         }
         private void updateDiet(Diet selectedDiet, String attribute) {  //modificar un atributo concreto
+            System.out.println("Introduce un nuevo valor");
             Integer maxValue = Kb.forceNextInt();
             if(MAX_CALORIES.equalsIgnoreCase(attribute)) {
                 selectedDiet.setMaxCalories(maxValue);
@@ -543,9 +544,12 @@ public class DietProgram {
         if(day==8) {
             return;
         }
-        String chosenDay = daysOfWeek.get(day -1);
-        String dietName = getSelectedDiet();
-        selected.getDietList().put(chosenDay, dietName);
+        String chosenDay = daysOfWeek.get(day -1);  //día elegido
+        String dietName = getSelectedDiet();    //con un nombre de dieta
+        Map<String, Diet> newDietMap = selected.getDietList();
+        Diet existingDiet = dietList.get(dietName);
+        newDietMap.put(chosenDay, existingDiet);
+        selected.setDietList(newDietMap);
     }
 
     private void updateCustomer(Customer selected, String attribute) { //modifica los atributos string
@@ -591,8 +595,10 @@ public class DietProgram {
         System.out.println("Género: " + gender);
         System.out.println("===================================");
         System.out.println("Lista de dietas del cliente: ");
-        for (int i = 0; i < selected.getDietList().size(); i++) {
-            System.out.println((i + 1) + selected.getDietList().get(i));
+        int i = 1;
+        for (String customerDietName: selected.getDietList().keySet()) {
+            System.out.println((i) + "." + customerDietName);
+            i++;
         }
     }
 
@@ -635,7 +641,7 @@ public class DietProgram {
     private boolean dietsForCustomers(String dietName) {
         for (Customer customer: customerList) {
             for(String valueKey: customer.getDietList().keySet()) {
-                if(dietName.equalsIgnoreCase(customer.getDietList().get(valueKey))) {
+                if(dietName.equalsIgnoreCase(customer.getDietList().get(valueKey).getName())) {
                     return true;
                 }
             }

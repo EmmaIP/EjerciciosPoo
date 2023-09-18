@@ -18,6 +18,7 @@ import java.util.List;
         private Integer maxFats;
         private Integer maxProteins;
         private List<Intake> intakes;
+        private String name;
 
         public Diet(){
 
@@ -25,7 +26,8 @@ import java.util.List;
 
         }
 
-        public Diet(Integer maxCalories){
+        public Diet(String name, Integer maxCalories){
+            this.name = name;
             this.maxCalories=maxCalories;
             this.intakes = new ArrayList<>();
 
@@ -167,7 +169,13 @@ import java.util.List;
             this.intakes = intakes;
         }
 
+        public String getName() {
+            return name;
+        }
 
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public String getDietIntakes(){
             String result = "";
