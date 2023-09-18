@@ -57,5 +57,10 @@ package com.campusdual.ejercicio6;
         public void setName(String name) {
             this.name = name;
         }
+
+        public String toString() {
+            String result = name + ";" + carbos + ";" + fats + ";" + proteins;
+            return result;
+        }
     }
 

@@ -22,7 +22,7 @@ package com.campusdual.ejercicio6;
 //        a-añadir un nuevo alimento
 //        b-listarlos: pudiendo modificar cualquier parámetro del mismo
 //        c-eliminarlos
-//        --Los pacientes ahora se guadararan en un fichero, se mantendrá el menú que permite listar pacientes pero se agregará una nueva opción que permita buscarlos por nombre y apellido. Las acciones de borrado de clientes los borran del fichero.
+//        --Los pacientes ahora se guardarán en un fichero, se mantendrá el menú que permite listar pacientes pero se agregará una nueva opción que permita buscarlos por nombre y apellido. Las acciones de borrado de clientes los borran del fichero.
 //        --Las dietas ahora se guardarán en un fichero. Se mantendrá la funcionalidad de listarlas pero se agregará una nueva opción de buscarlas por nombre.
 //        --Se crearán una nueva opciones en el menú en la gestión de dietas
 //        a-opción de mostrar estadisticas de uso: esta opción nos indicará en orden descendente las dietas más usadas y por cuantos pacientes se está usando cada una de ellas, solo deben aparecer las que estén en uso.

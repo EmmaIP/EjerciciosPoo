@@ -1,4 +1,5 @@
 package com.campusdual.ejercicio6;
+import com.campusdual.ejercicio6.DAO.FoodDAO;
 import com.campusdual.ejercicio6.Diet;
 import com.campusdual.ejercicio6.Food;
 import com.campusdual.ejercicio6.Gender;
@@ -329,6 +330,7 @@ public class DietProgram {
                     com.campusdual.ejercicio6.Food newFood = new com.campusdual.ejercicio6.Food(name,carbs,fats,proteins);
                     validateAndAddFoodToDiet(newFood,grams, diet);    //pasar por parámetro Diet
                     foodList.add(newFood);
+                    FoodDAO.saveFood
                     break;
                 case 2:
                     if(foodList.size()==0){
