@@ -39,8 +39,8 @@ import java.util.List;
 
         }
 
-        public Diet(Boolean women, Integer age, Integer height, Integer weight){
-            if(women){
+        public Diet(Gender gender, Integer age, Integer height, Integer weight){
+            if(gender == Gender.FEMALE){
                 maxCalories = (int) ((10*weight) + (6.25*height))-(5*age)-161;
             }else{
                 maxCalories = (int) ((10*weight) + (6.25*height))-(5*age)+5;

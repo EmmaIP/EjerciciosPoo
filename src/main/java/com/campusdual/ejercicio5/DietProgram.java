@@ -9,20 +9,16 @@ import java.util.*;
 
 public class DietProgram {
 
-        private Diet diet=null;
+    private Diet diet=null;
+    private List<Food> foodList;
+    private Map<String, Diet> dietList;
+    private List<Customer> customerList;
 
-        private List<Food> foodList;
+    public static final String MAX_CALORIES = "MAX_CALORIES";
+    public static final String MAX_CARBS = "MAX_CARBS";
+    public static final String MAX_FATS = "MAX_FATS";
+    public static final String MAX_PROTEINS = "MAX_PROTEINS";
 
-        private Map<String, Diet> dietList;
-
-        private List<Customer> customerList;
-
-        private List<String> daysOfWeek;
-
-        public static final String MAX_CALORIES = "MAX_CALORIES";
-        public static final String MAX_CARBS = "MAX_CARBS";
-        public static final String MAX_FATS = "MAX_FATS";
-        public static final String MAX_PROTEINS = "MAX_PROTEINS";
     public static final String NAME = "NAME";
     public static final String LASTNAME = "LASTNAME";
     public static final String SURNAME = "SURNAME";
@@ -31,11 +27,21 @@ public class DietProgram {
     public static final Integer HEIGHT = null;
     public static final Integer AGE = null;
 
+    public static final String DAY_M = "monday";
+    public static final String DAY_T = "tuesday";
+    public static final String DAY_W = "wednesday";
+    public static final String DAY_TH = "thursday";
+    public static final String DAY_F = "friday";
+    public static final String DAY_S = "saturday";
+    public static final String DAY_SU = "sunday";
+    private List<String> daysOfWeek;
+
         public DietProgram(){
 
             foodList = new ArrayList<>();
             dietList = new HashMap<>();
             customerList = new ArrayList<>();
+            daysOfWeek = Arrays.asList(DAY_M, DAY_T, DAY_W, DAY_TH, DAY_F, DAY_S, DAY_SU);
         }
 
         public void showMenuProgram(){
@@ -47,7 +53,7 @@ public class DietProgram {
                 System.out.println("Escriba una opción:");
                 System.out.println("===================================");
                 System.out.println("1-Gestión de dietas");
-                System.out.println("2-Gestión de pacientes");
+                System.out.println("2-Gestión de clientes");
                 System.out.println("3-Salir del programa");
                 option = Kb.getOption(1,3);
                 switch (option){
@@ -94,7 +100,7 @@ public class DietProgram {
             }while(option != 4);
         }
 
-        private String getSelectedDiet() {    //seleccionar una dieta en concreto por el nombre
+        private String getSelectedDiet() {    //método seleccionar una dieta en concreto por el nombre
             if(dietList.size() == 0) {
                 System.out.println("No existe ninguna dieta");
                 return null;
@@ -146,7 +152,7 @@ public class DietProgram {
                     break;
                 case 2:
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                    System.out.println("Escriba número de calorias");
+                    System.out.println("Escriba número de calorías");
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                     Integer calories = Kb.forceNextInt();
                     dietList.put(dietName, new Diet(calories));
@@ -177,7 +183,7 @@ public class DietProgram {
                     Integer age = Kb.forceNextInt();
                     System.out.println("Mujer u Hombre(m/h):");
                     String sexCharacter = Kb.nextLine();
-                    dietList.put(dietName, new Diet("m".equalsIgnoreCase(sexCharacter), age, height, weight));
+                    dietList.put(dietName, new Diet(Gender.getByString(sexCharacter), age, height, weight));
                     System.out.println("Se ha creado una dieta de " + this.diet.getMaxCalories() + " calorías máximas");
                     break;
                 case 5:
@@ -185,16 +191,20 @@ public class DietProgram {
                     System.out.println("Dieta específica para el cliente");
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                     Customer customer = getSelectedCustomer();
-                    dietList.put(dietName, new Diet("m".equalsIgnoreCase(customer.getGender()), customer.getAge(), customer.getHeight(), customer.getWeight()));
+                    dietList.put(dietName, new Diet(customer.getGender(), customer.getAge(), customer.getHeight(), customer.getWeight()));
                     System.out.println("Se ha creado una dieta de cliente de" + dietList.get(customer).getMaxCalories() + " calorías máximas");
             }
         }
-        private void deleteDiet() {
+        private void deleteDiet() {  //método borrar una dieta en concreto
             System.out.println("Seleccione una dieta para eliminarla:");
             String selected = getSelectedDiet();
             if(selected == null) {
                 System.out.println("Operación cancelada");
             }else {
+                if(dietsForCustomers(selected)) {
+                    System.out.println("La dieta no se puede eliminar porque está asociada a un cliente");
+                    return;
+                }
                 if(dietList.remove(selected) == null) {
                     System.out.println("No se puede eliminar");
                 }
@@ -268,7 +278,7 @@ public class DietProgram {
             foodList.remove(element);
             System.out.println("Se ha eliminado el alimento correctamente");
         }
-        private void updateDiet(Diet selectedDiet, String attribute) {
+        private void updateDiet(Diet selectedDiet, String attribute) {  //modificar un atributo concreto
             Integer maxValue = Kb.forceNextInt();
             if(MAX_CALORIES.equalsIgnoreCase(attribute)) {
                 selectedDiet.setMaxCalories(maxValue);
@@ -281,7 +291,7 @@ public class DietProgram {
             }
         }
 
-        private void addFoodMenu(Diet diet) {  //se le pasa por parametro un Diet, cambiando this.diet por el parametro
+        private void addFoodMenu(Diet diet) {  //se le pasa Diet, cambiando this.diet por el parámetro
             if(diet==null){
                 System.out.println("Para agregar alimentos hace falta iniciar una dieta");
                 return;
@@ -292,7 +302,7 @@ public class DietProgram {
             System.out.println("Escriba una opción:");
             System.out.println("===================================");
             System.out.println("1-Agregar un nuevo alimento");
-            System.out.println("2-Agregar un alimento ya existente");
+            System.out.println("2-Agregar más cantidad a un alimento ya existente");
 
             Integer option = Kb.getOption(1,2);
             switch (option){
@@ -311,16 +321,16 @@ public class DietProgram {
                     System.out.println("Gramos:");
                     Integer grams = Kb.forceNextInt();
                     Food newFood = new Food(name,carbs,fats,proteins);
-                    validateAndAddFoodToDiet(newFood,grams, diet);   //pasar por parametro Diet
+                    validateAndAddFoodToDiet(newFood,grams, diet);    //pasar por parámetro Diet
                     foodList.add(newFood);
                     break;
                 case 2:
                     if(foodList.size()==0){
-                        System.out.println("Para agregar un alimento existente, tienen que existir alimentos previos");
+                        System.out.println("Para agregar más cantidad, tienen que existir alimentos previos");
                         return;
                     }
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                    System.out.println("Escoja un alimento");
+                    System.out.println("Seleccione un alimento:");
                     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                     Integer i = 1;
                     for(Food food:foodList){
@@ -330,18 +340,18 @@ public class DietProgram {
                     System.out.println(i+"- Cancelar");
                     Integer element = Kb.getOption(1,i);
                     if(element==i){
-                        System.out.println("Cancelando alimento");
+                        System.out.println("Cancelando agregación");
                         return;
                     }
                     Food storedFood = foodList.get(element-1);
-                    System.out.println("indique el número de gramos de "+storedFood.getName());
+                    System.out.println("Indique el número de gramos de "+storedFood.getName());
                     Integer foodGrams = Kb.forceNextInt();
-                    validateAndAddFoodToDiet(storedFood,foodGrams, diet); //añadir parametro Diet
+                    validateAndAddFoodToDiet(storedFood,foodGrams, diet); //añadir parámetro Diet
                     break;
             }
         }
 
-        private void validateAndAddFoodToDiet(Food food, Integer grams, Diet diet){ //añadirle parametro Diet cambiando this-diet
+        private void validateAndAddFoodToDiet(Food food, Integer grams, Diet diet){ //añadir parámetro Diet
             try{
                 diet.addFood(food,grams);
             }catch (MaxCaloriesReachedException ecal){
@@ -548,7 +558,7 @@ public class DietProgram {
         } else if (SURNAME.equalsIgnoreCase(attribute)) {
             selected.setSurName(attribute);
         } else if (GENDER.equalsIgnoreCase(attribute)) {
-            selected.setGender(attribute);
+            selected.setGender(Gender.getByString(attribute));
         }
     }
     private void updateIntCustomer(Customer selected, Integer attribute) { //modifica los atributos int
@@ -563,7 +573,27 @@ public class DietProgram {
         }
     }
 
-    private void showDetailsCustomer(Customer selected) {
+    private void showDetailsCustomer(Customer selected) {  //me quedé aquí
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        System.out.println("Información del cliente:");
+        System.out.println("===================================");
+        System.out.println("Nombre completo : " + selected.getName() + " "
+                + selected.getLastName() + " " + selected.getSurName());
+        System.out.println("===================================");
+        System.out.println("Peso: " + selected.getWeight());
+        System.out.println("===================================");
+        System.out.println("Altura: " + selected.getHeight());
+        System.out.println("===================================");
+        System.out.println("Edad: " + selected.getAge());
+        System.out.println("===================================");
+        String gender = selected.getGender() == Gender.FEMALE ? "Mujer":"Hombre";
+        System.out.println("Género: " + gender);
+        System.out.println("===================================");
+        System.out.println("Lista de dietas del cliente: ");
+        for (int i = 0; i < selected.getDietList().size(); i++) {
+            System.out.println((i + 1) + selected.getDietList().get(i));
+        }
     }
 
     private void addCustomer() {
@@ -600,6 +630,17 @@ public class DietProgram {
         customerGender = Kb.nextLine();
         Customer newCustomer = new Customer(customerName, customerLastName, customerSurName, customerWeight, customerHeight, customerAge, customerGender);
         customerList.add(newCustomer);
+    }
+
+    private boolean dietsForCustomers(String dietName) {
+        for (Customer customer: customerList) {
+            for(String valueKey: customer.getDietList().keySet()) {
+                if(dietName.equalsIgnoreCase(customer.getDietList().get(valueKey))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

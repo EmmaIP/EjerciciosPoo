@@ -13,7 +13,7 @@ public class Customer {
     private Integer weight;
     private Integer height;
     private Integer age;
-    private String gender;
+    private Gender gender;
     private Map<String, String> dietList;
 
     public Customer(String name, String lastName, String surName, Integer weight, Integer height, Integer age, String gender) {
@@ -23,7 +23,7 @@ public class Customer {
         this.weight = weight;
         this.height = height;
         this.age = age;
-        this.gender = gender;
+        this.gender = Gender.getByString(gender);
         this.dietList = new HashMap<>();
     }
 
@@ -80,11 +80,11 @@ public class Customer {
         this.age = age;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
     }
 
